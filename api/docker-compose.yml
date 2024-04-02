@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+
+  backend-api:
+    container_name: backend-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db-api
+      - redis-api
+    env_file:
+      - .env
+  db-api:
+    image: postgres:15.1-alpine
+    container_name: db-api
+    env_file:
+      - .env
+    ports:
+      - "5440:5432"
+    volumes:
+      - db-api-data:/var/lib/postgresql/data/
+
+  redis-api:
+    image: redis:7.2-rc-alpine
+    restart: always
+    container_name: redis-api
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel debug --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-api-data:/data
+
+  minio-api:
+    image: minio/minio:latest
+    container_name: minio-api
+    env_file:
+      - .env
+    command: server ~/minio --console-address :9090
+    ports:
+      - '9090:9090'
+      - '9000:9000'
+    volumes:
+      - minio-api-data:/minio
+
+volumes:
+  db-api-data:
+  redis-api-data:
+  minio-api-data:
