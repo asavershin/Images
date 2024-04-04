@@ -1,13 +1,18 @@
 package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.image;
 
 import com.github.asavershin.api.domain.image.ImageId;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 public class UploadImageResponse {
-    private String imageId;
-    public UploadImageResponse(ImageId imageId){
-        this.imageId = imageId.value().toString();
+    /**
+     * UUID of the image.
+     */
+    private final String imageId;
+    /**
+     * @param aImageId UUID of the image
+     */
+    public UploadImageResponse(final ImageId aImageId) {
+        this.imageId = aImageId.value().toString();
     }
 }

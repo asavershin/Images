@@ -12,11 +12,16 @@ import static asavershin.generated.package_.Tables.USERS;
 @Repository
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
-
+    /**
+     * The DSLContext object is used to interact with the database.
+     */
     private final DSLContext dslContext;
 
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public void save(User newUser) {
+    public void save(final User newUser) {
         UsersRecord userRecord = dslContext.newRecord(USERS);
         userRecord.setUserId(newUser.userId().value());
         userRecord.setUserFirstname(newUser.userCredentials().email());
@@ -28,9 +33,13 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(userRecord)
                 .execute();
     }
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public boolean existByUserEmail(String email) {
-        return dslContext.fetchExists(USERS, USERS.USER_EMAIL.eq(email));
+    public boolean existByUserEmail(final String email) {
+        return dslContext.fetchExists(
+                USERS, USERS.USER_EMAIL.eq(email)
+        );
     }
 }

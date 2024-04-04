@@ -10,12 +10,28 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Implementation of the {@link GetPartOfImagesForAuthenticatedUser} interface.
+ * This class provides methods to retrieve a part of
+ * images for an authenticated user.
+ *
+ * @author asavershin
+ */
 @Query
 @RequiredArgsConstructor
-public class GetPartOfImagesForAuthenticatedUserImpl implements GetPartOfImagesForAuthenticatedUser {
+public class GetPartOfImagesForAuthenticatedUserImpl
+        implements GetPartOfImagesForAuthenticatedUser {
+    /**
+     * The ImageRepository dependency for fetching images.
+     */
     private final ImageRepository imageRepository;
+
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public List<Image> get(UserId userId, PartOfResources partOfResources) {
+    public List<Image> get(final UserId userId,
+                                 final PartOfResources partOfResources) {
         return imageRepository.findImagesByUserId(userId, partOfResources);
     }
 }

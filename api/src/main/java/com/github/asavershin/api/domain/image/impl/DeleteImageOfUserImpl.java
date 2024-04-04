@@ -10,13 +10,26 @@ import lombok.RequiredArgsConstructor;
 
 @Command
 @RequiredArgsConstructor
-public class DeleteImageOfUserImpl extends IsEntityFound implements DeleteImageOfUser {
+public class DeleteImageOfUserImpl extends IsEntityFound
+        implements DeleteImageOfUser {
+    /**
+     * The ImageRepository dependency for accessing image data.
+     */
     private final ImageRepository imageRepository;
+
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public void removeImageOfUser(ImageId imageId, UserId userId) {
+    public void removeImageOfUser(
+            final ImageId imageId,
+            final UserId userId
+    ) {
         var image = imageRepository.findImageByImageId(imageId);
         isEntityFound(image, "Image", "Id", imageId.value().toString());
         image.belongsToUser(userId);
-        imageRepository.deleteImageByImageId(imageRepository.findImageByImageId(imageId));
+        imageRepository.deleteImageByImageId(
+                imageRepository.findImageByImageId(imageId)
+        );
     }
 }

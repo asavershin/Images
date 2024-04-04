@@ -13,9 +13,16 @@ import java.util.List;
 @Query
 @RequiredArgsConstructor
 public class GetPartImagesOfUserImpl implements GetPartImagesOfUser {
+    /**
+     * The ImageRepository dependency for accessing image data.
+     */
     private final ImageRepository imageRepository;
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public List<Image> get(UserId userId, PartOfResources partOfResources) {
+    public List<Image> get(final UserId userId,
+                                 final PartOfResources partOfResources) {
         return imageRepository.findImagesByUserId(userId, partOfResources);
     }
 }

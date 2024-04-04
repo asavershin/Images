@@ -13,17 +13,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @DomainService
 @RequiredArgsConstructor
 public class TryToLoginImpl extends IsEntityFound implements TryToLogin {
-
+    /**
+     * The {@link PasswordEncoder}
+     * is used to encode and decode passwords securely.
+     */
     private final PasswordEncoder passwordEncoder;
+    /**
+     * The {@link AuthenticatedUserRepository} is used
+     * to retrieve user data from the database.
+     */
     private final AuthenticatedUserRepository authenticatedUserRepository;
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public AuthenticatedUser login(Credentials credentials) {
+    public AuthenticatedUser login(final Credentials credentials) {
 
-        var authenticatedUser = authenticatedUserRepository.findByEmail(credentials.email());
+        var authenticatedUser = authenticatedUserRepository
+                .findByEmail(credentials.email());
 
-        isEntityFound(authenticatedUser,"User", "email", credentials.email());
-        if(passwordEncoder.matches(credentials.password(), authenticatedUser.userCredentials().password())) {
+        isEntityFound(authenticatedUser, "User", "email", credentials.email());
+        if (passwordEncoder.matches(credentials.password(),
+                authenticatedUser.userCredentials().password())) {
             return authenticatedUser;
         }
         throw new AuthException("Wrong password");

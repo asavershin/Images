@@ -2,7 +2,6 @@ package com.github.asavershin.api.application.in.services.user.impl;
 
 import com.github.asavershin.api.application.in.services.user.JwtService;
 import com.github.asavershin.api.config.properties.JwtProperties;
-import com.github.asavershin.api.domain.user.AuthenticatedUser;
 import com.github.asavershin.api.domain.user.Credentials;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,20 +17,30 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtServiceIml implements JwtService {
 
+    /**
+     * The JwtProperties object contains the properties
+     * for generating and validating JWT tokens.
+     */
     private final JwtProperties jwtProperties;
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public String generateAccessToken(Credentials credentials) {
+    public String generateAccessToken(final Credentials credentials) {
         return buildToken(credentials, jwtProperties.getAccessExpiration());
     }
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public String generateRefreshToken(Credentials credentials) {
+    public String generateRefreshToken(final Credentials credentials) {
         return buildToken(credentials, jwtProperties.getRefreshExpiration());
     }
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public String extractSub(String jwt) {
+    public String extractSub(final String jwt) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
@@ -40,12 +49,15 @@ public class JwtServiceIml implements JwtService {
                 .getSubject();
     }
 
-    private String buildToken(Credentials credentials, long expiration) {
+    private String buildToken(final Credentials credentials,
+                              final long expiration) {
         return Jwts
                 .builder()
                 .setSubject(credentials.email())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .setExpiration(
+                        new Date(System.currentTimeMillis() + expiration)
+                )
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
