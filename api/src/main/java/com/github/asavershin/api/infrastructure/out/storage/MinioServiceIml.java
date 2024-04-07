@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class MinioServiceIml implements MinioService {
@@ -47,7 +46,7 @@ public class MinioServiceIml implements MinioService {
      * Not final to allow spring use proxy.
      */
     @Override
-    public String saveFile(final MultipartFile image) {
+    public void saveFile(final MultipartFile image, final String filename) {
 
         if (!bucketExists(minioProperties.getBucket())) {
             throw new FileException(
@@ -58,7 +57,6 @@ public class MinioServiceIml implements MinioService {
         if (image.isEmpty() || image.getOriginalFilename() == null) {
             throw new FileException("File must have name");
         }
-        var link = generateFileName();
         InputStream inputStream;
         try {
             inputStream = image.getInputStream();
@@ -66,8 +64,7 @@ public class MinioServiceIml implements MinioService {
             throw new FileException("File upload failed: "
                     + e.getMessage());
         }
-        saveImage(inputStream, link);
-        return link;
+        saveFile(inputStream, filename);
     }
     /**
      * Not final to allow spring use proxy.
@@ -124,7 +121,7 @@ public class MinioServiceIml implements MinioService {
     }
 
     @SneakyThrows
-    private void saveImage(
+    private void saveFile(
             final InputStream inputStream,
             final String fileName
     ) {
@@ -133,10 +130,6 @@ public class MinioServiceIml implements MinioService {
                 .bucket(minioProperties.getBucket())
                 .object(fileName)
                 .build());
-    }
-
-    private String generateFileName() {
-        return UUID.randomUUID().toString();
     }
 
     @SneakyThrows(Exception.class)

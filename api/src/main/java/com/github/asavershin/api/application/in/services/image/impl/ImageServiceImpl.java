@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -63,10 +62,7 @@ public class ImageServiceImpl implements ImageService, Serializable {
                         ),
                 multipartFile.getSize()
         );
-        // TODO Why minio service store before postgreSQL?
-        var imageId = new ImageId(
-                UUID.fromString(minioService.saveFile(multipartFile))
-        );
+        var imageId = ImageId.nextIdentity();
         storeImageOfUser.storeImageOfUser(
                 new Image(
                         imageId,
@@ -74,6 +70,7 @@ public class ImageServiceImpl implements ImageService, Serializable {
                         userId
                 )
         );
+        minioService.saveFile(multipartFile, imageId.value().toString());
         return imageId;
     }
 
