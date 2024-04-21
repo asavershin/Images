@@ -1,10 +1,10 @@
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers;
+package com.github.asavershin.api.infrastructure.in.controllers;
 
 import com.github.asavershin.api.common.NotFoundException;
 import com.github.asavershin.api.domain.ResourceOwnershipException;
 import com.github.asavershin.api.domain.user.AuthException;
-import com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.ExceptionBody;
-import com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.UISuccessContainer;
+import com.github.asavershin.api.infrastructure.in.controllers.dto.ExceptionBody;
+import com.github.asavershin.api.infrastructure.in.controllers.dto.UISuccessContainer;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;

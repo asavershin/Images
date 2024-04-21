@@ -1,4 +1,4 @@
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.user;
+package com.github.asavershin.api.infrastructure.in.controllers.dto.user;
 
 import com.github.asavershin.api.domain.user.Credentials;
 import jakarta.validation.constraints.Email;

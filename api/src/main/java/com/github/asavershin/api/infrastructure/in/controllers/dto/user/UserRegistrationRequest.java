@@ -1,9 +1,11 @@
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.user;
+package com.github.asavershin.api.infrastructure.in.controllers.dto.user;
 
 
 import com.github.asavershin.api.config.properties.UserProperties;
 import com.github.asavershin.api.domain.user.Credentials;
 import com.github.asavershin.api.domain.user.FullName;
+import com.github.asavershin.api.domain.user.User;
+import com.github.asavershin.api.domain.user.UserId;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -45,20 +47,34 @@ public class UserRegistrationRequest {
             message = "Длина пароля должна быть не менее 8")
     @Getter
     private String userPassword;
+    /**
+     * Converts the UserRegistrationRequest DTO to a User domain object.
+     *
+     * @return A new User object with the provided data.
+     */
+    public User toUser() {
+        return new User(
+                UserId.nextIdentity(),
+                toFullName(),
+                toCredentials()
+        );
+    }
 
     /**
      * Fabric method to create FullName from DTO.
+     *
      * @return FullName value object
      */
-    public FullName toFullName() {
+    private FullName toFullName() {
         return new FullName(userFirstname, userLastname);
     }
 
     /**
      * Fabric method to create credentials.
+     *
      * @return Credentials value object
      */
-    public Credentials toCredentials() {
+    private Credentials toCredentials() {
         return new Credentials(userEmail, userPassword);
     }
 }

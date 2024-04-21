@@ -1,4 +1,4 @@
 /**
  * This package contains controllers that handle http requests.
  */
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers;
+package com.github.asavershin.api.infrastructure.in.controllers;

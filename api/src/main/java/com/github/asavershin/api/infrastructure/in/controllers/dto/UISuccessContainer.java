@@ -1,4 +1,4 @@
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto;
+package com.github.asavershin.api.infrastructure.in.controllers.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

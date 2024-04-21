@@ -1,4 +1,4 @@
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.image;
+package com.github.asavershin.api.infrastructure.in.controllers.dto.image;
 
 import com.github.asavershin.api.domain.image.Image;
 import lombok.Getter;

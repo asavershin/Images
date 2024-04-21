@@ -19,5 +19,5 @@ import org.springframework.context.annotation.FilterType;
                         value = Command.class)
         }
 )
-public class AnnotationsConfig {
+public class AnnotationsConf {
 }

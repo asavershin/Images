@@ -13,7 +13,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @author Asavershin
  */
 @Configuration
-public class RedisConfig {
+public class RedisConf {
 
     /**
      * Creates a new instance of {@link RedisTemplate} with the provided

@@ -8,7 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
-public class AuthConfig {
+public class AuthConf {
     /**
      * Configures a BCryptPasswordEncoder bean for password encoding.
      *

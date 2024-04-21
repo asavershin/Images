@@ -1,11 +1,11 @@
-package com.github.asavershin.api.infrastructure.in.impl.controllers.controllers;
+package com.github.asavershin.api.infrastructure.in.controllers;
 
 import com.github.asavershin.api.application.in.services.user.ApplicationCredentials;
 import com.github.asavershin.api.application.in.services.user.GetNewCredentials;
 import com.github.asavershin.api.application.in.services.user.GetNewCredentialsUsingRefreshToken;
 import com.github.asavershin.api.domain.user.RegisterNewUser;
-import com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.user.UserLoginRequest;
-import com.github.asavershin.api.infrastructure.in.impl.controllers.controllers.dto.user.UserRegistrationRequest;
+import com.github.asavershin.api.infrastructure.in.controllers.dto.user.UserLoginRequest;
+import com.github.asavershin.api.infrastructure.in.controllers.dto.user.UserRegistrationRequest;
 import com.github.asavershin.api.infrastructure.in.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,8 +45,7 @@ public class AuthController {
     public void register(
             final @RequestBody @Valid UserRegistrationRequest request
     ) {
-        register.register(request.toFullName(),
-                request.toCredentials());
+        register.register(request.toUser());
     }
 
     /**
