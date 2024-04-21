@@ -163,7 +163,7 @@ public class ImageController {
                 filters.stream()
                         .map(Filter::fromString)
                         .toList(),
-                new ImageId(UUID.fromString(imageId))
+                ImageId.fromString(imageId)
         );
         producer.send(event, user.authenticatedUser().userId());
         return new ApplyImageFiltersResponse(
