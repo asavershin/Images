@@ -18,6 +18,7 @@ public record ImageId(UUID value) {
     public ImageId {
         Objects.requireNonNull(value, "Image ID must not be null");
     }
+
     /**
      * Generates a new, unique ImageId.
      *
@@ -25,5 +26,25 @@ public record ImageId(UUID value) {
      */
     public static ImageId nextIdentity() {
         return new ImageId(UUID.randomUUID());
+    }
+
+    /**
+     * Parses a string into an ImageId.
+     *
+     * @param id The string representation of the ImageId.
+     * @return A new ImageId instance with the parsed UUID.
+     * @throws IllegalArgumentException if the provided string
+     *                                  is not a valid UUID.
+     */
+    public static ImageId fromString(final String id) {
+        Objects.requireNonNull(id, "ImageId must not be null");
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(id);
+        } catch (final IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid ImageId: "
+                    + ex.getMessage());
+        }
+        return new ImageId(uuid);
     }
 }
