@@ -1,4 +1,4 @@
-package com.github.asavershin.worker;
+package com.github.asavershin.worker.services;
 
 import com.github.asavershin.worker.config.MinIOProperties;
 import com.github.asavershin.worker.out.MinioService;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Profile("rotate")
 @RequiredArgsConstructor
 @Slf4j
-public class RotateImage implements Worker{
+public class RotateImage implements Worker {
     private final MinioService imageStorage;
     private final MinIOProperties props;
 

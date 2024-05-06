@@ -1,5 +1,7 @@
-package com.github.asavershin.worker;
+package com.github.asavershin.worker.services;
 
+import com.github.asavershin.worker.InvalidWorker;
+import com.github.asavershin.worker.dto.Task;
 import com.github.asavershin.worker.out.CacheRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +24,7 @@ public class WorkerManagerImpl implements WorkerManager {
         if (!Objects.equals(
                 task.getFilters().get(0),
                 worker.whoAmI())) {
-            throw new RuntimeException("Invalid worker");
+            throw new InvalidWorker("Invalid worker");
         }
         var cached = cache.getCache(
                 task.getRequestId() + task.getImageId());
@@ -39,6 +41,7 @@ public class WorkerManagerImpl implements WorkerManager {
         var imageId = worker.doWork(task.getImageId(),
                 task.getFilters().size() == 1
         );
+        task.setImageId(imageId);
         task.getFilters().remove(0);
         return task;
     }

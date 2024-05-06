@@ -1,4 +1,4 @@
-package com.github.asavershin.images.config;
+package com.github.asavershin.worker.config;
 
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;

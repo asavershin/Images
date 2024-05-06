@@ -1,4 +1,4 @@
-package com.github.asavershin.worker;
+package com.github.asavershin.worker.services;
 
 import com.github.asavershin.worker.config.MinIOProperties;
 import com.github.asavershin.worker.out.MinioService;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @Profile("blackwhite")
 @RequiredArgsConstructor
 @Slf4j
-public class BlackWhiteWorker implements Worker{
+public class BlackWhiteWorker implements Worker {
     private final MinioService imageStorage;
     private final MinIOProperties props;
 

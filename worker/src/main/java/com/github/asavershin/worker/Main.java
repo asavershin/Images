@@ -1,4 +1,4 @@
-package com.github.asavershin.images;
+package com.github.asavershin.worker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

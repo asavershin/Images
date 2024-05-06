@@ -1,7 +1,9 @@
-package com.github.asavershin.worker.out;
+package com.github.asavershin.worker.out.impl;
 
 
 import com.github.asavershin.worker.config.MinIOProperties;
+import com.github.asavershin.worker.out.FileException;
+import com.github.asavershin.worker.out.MinioService;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;
@@ -89,7 +91,7 @@ public class MinioServiceIml implements MinioService {
                     .build());
             return obj;
         } catch (Exception e) {
-            throw new FileException("File download failed: " + e.getMessage());
+            throw new FileException("File " + link + " download failed: " + e.getMessage());
         }
     }
 

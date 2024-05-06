@@ -1,6 +1,4 @@
-package com.github.asavershin.images.out;
-
-import org.springframework.web.multipart.MultipartFile;
+package com.github.asavershin.worker.out;
 
 import java.io.InputStream;
 

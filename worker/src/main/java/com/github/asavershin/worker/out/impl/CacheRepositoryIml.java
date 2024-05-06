@@ -1,5 +1,6 @@
-package com.github.asavershin.worker.out;
+package com.github.asavershin.worker.out.impl;
 
+import com.github.asavershin.worker.out.CacheRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;

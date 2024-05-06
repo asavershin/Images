@@ -1,4 +1,4 @@
-package com.github.asavershin.images.out;
+package com.github.asavershin.worker.out;
 
 public class FileException extends RuntimeException {
     /**

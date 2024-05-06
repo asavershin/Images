@@ -8,5 +8,8 @@ docker compose -f kafka/docker-compose.yml up --build -d
 
 docker compose -f api/docker-compose.yml up --build -d  
 
+docker compose -f worker/docker-compose-blackwhite.yml up --build -d
+docker compose -f worker/docker-compose-rotate.yml up --build -d
+
 
 
