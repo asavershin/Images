@@ -1,0 +1,36 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  config:
+    import: optional:file:.env[.properties]
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  kafka:
+    listener.ack-mode: manual
+    bootstrap-servers:
+      - kafka-1:9092
+      - kafka-2:9093
+      - kafka-3:9094
+    properties:
+      sasl:
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${kafka_username:'kafka'} password=${kafka_password:'password123'};
+        mechanism: PLAIN
+      security:
+        protocol: SASL_PLAINTEXT
+
+minio:
+  url: ${MINIO_URL}
+  user: ${MINIO_ROOT_USER}
+  password: ${MINIO_ROOT_PASSWORD}
+  bucket: ${MINIO_BUCKET}
+  ttlprefix: ${MINIO_TTL_PREFIX}
+  expiration: ${MINIO_EXPIRATION}
+  console-port: ${MINIO_CONSOLE_PORT}
+  port: ${MINIO_PORT}
+
+cache-expiration: ${REDIS_CACHE_TIME}

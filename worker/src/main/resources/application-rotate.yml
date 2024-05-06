@@ -1,0 +1,10 @@
+server:
+  port: 8083
+
+app:
+  wiptopic: ${TOPIC:images.wip}
+  retries: ${RETRIES:3}
+  donetopic: ${TOPIC:images.done}
+  partitions: ${PARTITIONS:1}
+  replicas: ${REPLICAS:3}
+  group-id: ${GROUP_ID:rotate}
