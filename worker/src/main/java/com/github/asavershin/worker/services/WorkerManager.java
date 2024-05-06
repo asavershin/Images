@@ -1,4 +1,4 @@
-package com.github.asavershin.images;
+package com.github.asavershin.worker;
 
 public interface WorkerManager {
     Task start(Task filters);

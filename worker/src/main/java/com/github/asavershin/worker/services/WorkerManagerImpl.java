@@ -1,6 +1,6 @@
-package com.github.asavershin.images;
+package com.github.asavershin.worker;
 
-import com.github.asavershin.images.out.CacheRepository;
+import com.github.asavershin.worker.out.CacheRepository;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,24 +19,25 @@ public class WorkerManagerImpl implements WorkerManager {
 
     @Override
     public Task start(final Task task) {
+        if (!Objects.equals(
+                task.getFilters().get(0),
+                worker.whoAmI())) {
+            throw new RuntimeException("Invalid worker");
+        }
         var cached = cache.getCache(
                 task.getRequestId() + task.getImageId());
         if (task.getFilters().isEmpty()
-                || !Objects.equals(
-                task.getFilters().get(0),
-                worker.whoAmI())
                 || cached != null
         ) {
             return null;
         }
-
-        var imageId = worker.doWork(task.getImageId(),
-                task.getFilters().size() == 1
-        );
         cache.addCache(
-                task.getRequestId() + imageId,
+                task.getRequestId() + task.getImageId(),
                 "",
                 cacheExp
+        );
+        var imageId = worker.doWork(task.getImageId(),
+                task.getFilters().size() == 1
         );
         task.getFilters().remove(0);
         return task;

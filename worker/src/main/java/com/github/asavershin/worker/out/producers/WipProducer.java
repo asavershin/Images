@@ -1,26 +1,30 @@
-package com.github.asavershin.images.out;
+package com.github.asavershin.worker.out;
 
-import com.github.asavershin.images.Task;
+import com.github.asavershin.worker.Task;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.github.asavershin.images.config.KafkaConf.ALL_ACKS_KAFKA_TEMPLATE;
+import static com.github.asavershin.worker.config.KafkaConf.WIP_PRODUCER;
 
 @Component
-public class Producer {
+public class WipProducer {
     private final KafkaTemplate<String, Task> producer;
-
-    public Producer(
-            final @Qualifier(ALL_ACKS_KAFKA_TEMPLATE)
+    @Value("${app.wiptopic}")
+    @NotNull(message = "Topic for KafkaProducer is null")
+    private String topic;
+    public WipProducer(
+            final @Qualifier(WIP_PRODUCER)
             KafkaTemplate<String, Task> allAcksKafkaTemplate
     ) {
         producer = allAcksKafkaTemplate;
     }
 
     @Transactional
-    public void produce(final Task event, final String topic) {
+    public void produce(final Task event) {
         producer.send(
                         topic,
                         event

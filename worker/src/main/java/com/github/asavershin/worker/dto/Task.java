@@ -1,4 +1,4 @@
-package com.github.asavershin.images;
+package com.github.asavershin.worker;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

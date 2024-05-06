@@ -19,4 +19,6 @@ public interface CacheRepository {
      * or null if the entry does not exist or has expired
      */
     String getCache(String key);
+
+    void deleteCache(String key);
 }

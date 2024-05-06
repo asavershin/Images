@@ -1,7 +1,7 @@
-package com.github.asavershin.images.out;
+package com.github.asavershin.worker.out;
 
 
-import com.github.asavershin.images.config.MinIOProperties;
+import com.github.asavershin.worker.config.MinIOProperties;
 import io.minio.BucketExistsArgs;
 import io.minio.GetObjectArgs;
 import io.minio.MakeBucketArgs;

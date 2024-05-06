@@ -14,19 +14,24 @@ public class MinIOProperties {
      * The name of the bucket in the MinIO service.
      */
     private String bucket;
-
     /**
      * The URL of the MinIO service.
      */
     private String url;
-
     /**
      * The username for the MinIO service.
      */
     private String user;
-
     /**
      * The password for the MinIO service.
      */
     private String password;
+    /**
+     * The ttl of the MinIO objects.
+     */
+    private String expiration;
+    /**
+     * The name of the bucket with ttl.
+     */
+    private String ttlprefix;
 }

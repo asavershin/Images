@@ -19,7 +19,6 @@
         <springdoc.starter.version>2.1.0</springdoc.starter.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
         <minio.version>8.5.7</minio.version>
-        <kafka-clients.version>3.7.0</kafka-clients.version>
 
 <!--        TESTS-->
         <containers.version>1.19.1</containers.version>

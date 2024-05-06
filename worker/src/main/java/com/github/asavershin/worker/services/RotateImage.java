@@ -1,22 +1,15 @@
-package com.github.asavershin.images;
+package com.github.asavershin.worker;
 
-import com.github.asavershin.images.config.MinIOProperties;
-import com.github.asavershin.images.out.MinioService;
-import io.minio.MinioProperties;
+import com.github.asavershin.worker.config.MinIOProperties;
+import com.github.asavershin.worker.out.MinioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;

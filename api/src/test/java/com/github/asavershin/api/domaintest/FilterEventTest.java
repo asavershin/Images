@@ -23,7 +23,7 @@ public class FilterEventTest {
         // Given
         ImageId imageId = ImageId.nextIdentity();
         List<Filter> filters = new ArrayList<>();
-        filters.add(Filter.CROP);
+        filters.add(Filter.BLACKWHITE);
         // When
         var event = new ImageProcessingStarted(filters, imageId);
 
@@ -40,7 +40,7 @@ public class FilterEventTest {
         // Given
         var lotsOfFilters = hugeList();
         var zeroFilters = new ArrayList<Filter>();
-        var normalFilters = List.of(Filter.CROP);
+        var normalFilters = List.of(Filter.BLACKWHITE);
 
         // When
         var nullIdEx = assertThrows(NullPointerException.class,
@@ -68,7 +68,7 @@ public class FilterEventTest {
     void testPublish() {
         // Arrange
         var originalImageId = ImageId.nextIdentity();
-        List<Filter> filters = List.of(Filter.CROP, Filter.REMOVE_BACKGROUND);
+        List<Filter> filters = List.of(Filter.BLACKWHITE, Filter.ROTATE);
         ImageProcessingStarted imageProcessingStarted = new ImageProcessingStarted(filters, originalImageId);
 
         // Act
@@ -109,7 +109,7 @@ public class FilterEventTest {
     private List<Filter> createFiltersWithMaxCount() {
         List<Filter> filters = new ArrayList<>();
         for (int i = 0; i < 32780; i++) {
-            filters.add(Filter.CROP);
+            filters.add(Filter.BLACKWHITE);
         }
         return filters;
     }

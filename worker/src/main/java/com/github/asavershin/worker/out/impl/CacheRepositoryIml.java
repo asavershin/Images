@@ -1,4 +1,4 @@
-package com.github.asavershin.images.out;
+package com.github.asavershin.worker.out;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,5 +32,13 @@ public class CacheRepositoryIml implements CacheRepository {
     @Override
     public String getCache(final String key) {
         return (String) redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * Not final to allow spring use proxy.
+     */
+    @Override
+    public void deleteCache(final String key) {
+        redisTemplate.delete(key);
     }
 }

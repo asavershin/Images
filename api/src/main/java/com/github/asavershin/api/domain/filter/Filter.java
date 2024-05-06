@@ -10,17 +10,12 @@ public enum Filter {
     /**
      * Represents the REVERS_COLORS filter.
      */
-    REVERS_COLORS,
+    ROTATE,
 
     /**
      * Represents the CROP filter.
      */
-    CROP,
-
-    /**
-     * Represents the REMOVE_BACKGROUND filter.
-     */
-    REMOVE_BACKGROUND;
+    BLACKWHITE;
 
     /**
      * Converts a string representation of a filter name string

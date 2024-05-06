@@ -9,12 +9,20 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.SetBucketLifecycleArgs;
+import io.minio.messages.Expiration;
+import io.minio.messages.LifecycleConfiguration;
+import io.minio.messages.LifecycleRule;
+import io.minio.messages.RuleFilter;
+import io.minio.messages.Status;
 import lombok.SneakyThrows;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.time.ZonedDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -27,14 +35,15 @@ public class MinioServiceIml implements MinioService {
      * The MinIO properties from .yml.
      */
     private final MinIOProperties minioProperties;
+
     /**
      * Constructor for {@link MinioServiceIml}.
      *
-     * @param aMinioClient The {@link MinioClient}
-     *                    instance to interact with the MinIO server.
+     * @param aMinioClient     The {@link MinioClient}
+     *                         instance to interact with the MinIO server.
      * @param aMinioProperties The {@link MinIOProperties}
-     *                        instance containing the configuration
-     *                        for the MinIO server.
+     *                         instance containing the configuration
+     *                         for the MinIO server.
      */
     public MinioServiceIml(final MinioClient aMinioClient,
                            final MinIOProperties aMinioProperties) {
@@ -42,6 +51,7 @@ public class MinioServiceIml implements MinioService {
         this.minioProperties = aMinioProperties;
         createBucket();
     }
+
     /**
      * Not final to allow spring use proxy.
      */
@@ -66,6 +76,7 @@ public class MinioServiceIml implements MinioService {
         }
         saveFile(inputStream, filename);
     }
+
     /**
      * Not final to allow spring use proxy.
      */
@@ -77,13 +88,14 @@ public class MinioServiceIml implements MinioService {
         try {
             return IOUtils.toByteArray(
                     minioClient.getObject(GetObjectArgs.builder()
-                    .bucket(minioProperties.getBucket())
-                    .object(link)
-                    .build()));
+                            .bucket(minioProperties.getBucket())
+                            .object(link)
+                            .build()));
         } catch (Exception e) {
             throw new FileException("File download failed: " + e.getMessage());
         }
     }
+
     /**
      * Not final to allow spring use proxy.
      */
@@ -110,14 +122,35 @@ public class MinioServiceIml implements MinioService {
 
     @SneakyThrows
     private void createBucket() {
-        boolean found = minioClient.bucketExists(BucketExistsArgs.builder()
-                .bucket(minioProperties.getBucket())
-                .build());
+        boolean found = bucketExists(minioProperties.getBucket());
         if (!found) {
+            List<LifecycleRule> rules = new LinkedList<>();
+            rules.add(
+                    new LifecycleRule(
+                            Status.ENABLED,
+                            null,
+                            new Expiration((ZonedDateTime) null,
+                                    Integer.valueOf(
+                                            minioProperties.getExpiration()
+                                    ),
+                                    null),
+                            new RuleFilter(minioProperties.getTtlprefix()),
+                            "rule1",
+                            null,
+                            null,
+                            null));
             minioClient.makeBucket(MakeBucketArgs.builder()
                     .bucket(minioProperties.getBucket())
                     .build());
+            minioClient.setBucketLifecycle(
+                    SetBucketLifecycleArgs.builder().bucket(
+                                    minioProperties.getBucket()
+                            )
+                            .config(
+                                    new LifecycleConfiguration(rules)
+                            ).build());
         }
+
     }
 
     @SneakyThrows

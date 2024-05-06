@@ -102,6 +102,7 @@ public class KafkaConf {
                 StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         // Партиция одна, так что все равно как роутить
         props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,
                 RoundRobinPartitioner.class);
