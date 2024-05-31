@@ -15,10 +15,17 @@ import com.github.asavershin.api.infrastructure.in.controllers.dto.UISuccessCont
 import com.github.asavershin.api.infrastructure.in.controllers.dto.image.UploadImageResponse;
 import com.github.asavershin.api.infrastructure.in.security.CustomUserDetails;
 import com.github.asavershin.api.infrastructure.out.producers.KafkaProducer;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.BucketConfiguration;
+import io.github.bucket4j.distributed.proxy.ProxyManager;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,13 +36,16 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 @RestController
 @RequestMapping("/api/v1/image")
 @Tag(name = "image", description = "Работа с изображениями")
 @RequiredArgsConstructor
+@Slf4j
 public class ImageController {
     /**
      * Domain query that allows you take images of specific user.
@@ -54,6 +64,10 @@ public class ImageController {
      * Service for tracking the status of image processing events.
      */
     private final GetStatusEvent statusEvent;
+    /**
+     * Using for limiting requests to imagga filter.
+     */
+    private final ProxyManager<String> pm;
 
     /**
      * Not final to allows Spring use proxy.
@@ -144,11 +158,12 @@ public class ImageController {
                 user.authenticatedUser().userId()
         );
     }
+
     /**
      * This start image processing event by authenticated user to his image.
      *
-     * @param user      Is param that injects by spring and contains
-     *                  current authenticated spring user.
+     * @param user    Is param that injects by spring and contains
+     *                current authenticated spring user.
      * @param imageId The ID of the image that will be processed.
      * @param filters The list of filters that will be applied to the image.
      * @return request id
@@ -165,7 +180,24 @@ public class ImageController {
                         .toList(),
                 ImageId.fromString(imageId)
         );
-        producer.send(event, user.authenticatedUser().userId());
+        if (event.filters().contains(Filter.IMAGGA)) {
+            var b = getBucket(user);
+            var tokens = b.getAvailableTokens();
+            log.info("Available tokens {} for user {} ",
+                    tokens,
+                    user.getUsername()
+            );
+            if (tokens > 0) {
+                producer.send(event, user.authenticatedUser().userId());
+                b.tryConsume(1);
+            } else {
+                throw new RuntimeException(
+                        "You have reached your limit on \"imagga\""
+                );
+            }
+        } else {
+            producer.send(event, user.authenticatedUser().userId());
+        }
         return new ApplyImageFiltersResponse(
                 event.requestId().value().toString()
         );
@@ -196,6 +228,21 @@ public class ImageController {
                                 user.authenticatedUser().userId(),
                                 ImageId.fromString(imageId)
                         )
+        );
+    }
+
+    private Bucket getBucket(final UserDetails userDetails) {
+        var username = userDetails.getUsername();
+        return pm.builder().build(
+                "bucket: " + username,
+                () -> BucketConfiguration.builder()
+                        .addLimit(Bandwidth.builder().capacity(1L)
+                                .refillIntervally(1,
+                                        Duration.ofDays(1L)
+                                )
+                                .build()
+                        )
+                        .build()
         );
     }
 }
