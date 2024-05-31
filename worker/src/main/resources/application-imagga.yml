@@ -1,0 +1,39 @@
+server:
+  port: 8082
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  config:
+    import: optional:file:.env[.properties]
+  data:
+    redis:
+      host: ${REDIS_HOST_BLACKWHITE}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  kafka:
+    listener.ack-mode: manual
+    bootstrap-servers:
+      - kafka-1:9092
+      - kafka-2:9093
+      - kafka-3:9094
+    properties:
+      sasl:
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${kafka_username:'kafka'} password=${kafka_password:'password123'};
+        mechanism: PLAIN
+      security:
+        protocol: SASL_PLAINTEXT
+
+app:
+  wiptopic: ${TOPIC:images.wip}
+  retries: ${RETRIES:3}
+  donetopic: ${TOPIC:images.done}
+  partitions: ${PARTITIONS:1}
+  replicas: ${REPLICAS:3}
+  group-id: ${GROUP_ID:blackwhite}
+
+imagga:
+  key: ${IMAGGA_KEY:acc_0a66897eb48ffb1}
+  secret: ${IMAGGA_SECRET:4b2c3cc9d36f0c91cd99da09d9781ef9}
