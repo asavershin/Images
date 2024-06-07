@@ -12,8 +12,8 @@
     <artifactId>api</artifactId>
 
     <properties>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jooq.version>3.19.3</jooq.version>
         <springdoc.starter.version>2.1.0</springdoc.starter.version>
@@ -256,4 +256,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

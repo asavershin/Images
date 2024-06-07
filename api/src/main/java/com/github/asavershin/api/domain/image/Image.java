@@ -1,6 +1,5 @@
 package com.github.asavershin.api.domain.image;
 
-import com.github.asavershin.api.domain.IsEntityFound;
 import com.github.asavershin.api.domain.ResourceOwnershipException;
 import com.github.asavershin.api.domain.user.UserId;
 import lombok.EqualsAndHashCode;
@@ -13,36 +12,68 @@ import java.util.Objects;
 @Getter
 @EqualsAndHashCode
 public class Image {
+    /**
+     * The unique identifier for the image.
+     */
     private ImageId imageId;
-    private MetaInfo metaInfo;
+
+    /**
+     * The meta information associated with the image.
+     */
+    private MetaData metaInfo;
+
+    /**
+     * The user who owns the image.
+     */
     private UserId userId;
-    public Image(ImageId imageId, MetaInfo metaInfo, UserId userId){
-        setImageId(imageId);
-        setMetaInfo(metaInfo);
-        setUserId(userId);
+
+    /**
+     * Constructor for creating a new Image object.
+     *
+     * @param aImageId the unique identifier for the image
+     * @param aMetaInfo the meta information associated with the image
+     * @param aUserId the user who owns the image
+     */
+    public Image(final ImageId aImageId,
+                 final MetaData aMetaInfo,
+                 final UserId aUserId) {
+        setImageId(aImageId);
+        setMetaInfo(aMetaInfo);
+        setUserId(aUserId);
     }
 
-    public Image belongsToUser(UserId userId){
-        if (!this.userId.equals(userId)){
+    /**
+     * Checks if the given user owns the image.
+     *
+     * @param aUserId the user to check ownership for
+     * @return the same image instance if the user owns the image,
+     * otherwise throws a {@link ResourceOwnershipException}
+     * @throws ResourceOwnershipException if the image does not belong
+     * to the given user
+     */
+    public Image belongsToUser(final UserId aUserId) {
+        if (!this.userId.equals(aUserId)) {
             throw new ResourceOwnershipException(
-                    "Image with id " + imageId.value().toString()+ " does not belong to user with id " + userId.value().toString()
+                    "Image with id " + imageId.value().toString()
+                            + " does not belong to user with id "
+                            + aUserId.value().toString()
             );
         }
         return this;
     }
 
-    private void setImageId(ImageId imageId) {
-        Objects.requireNonNull(imageId, "ImageId must not be null");
-        this.imageId = imageId;
+    private void setImageId(final ImageId aImageId) {
+        Objects.requireNonNull(aImageId, "ImageId must not be null");
+        this.imageId = aImageId;
     }
 
-    private void setMetaInfo(MetaInfo metaInfo) {
-        Objects.requireNonNull(metaInfo, "MetaInfo must not be null");
-        this.metaInfo = metaInfo;
+    private void setMetaInfo(final MetaData aMetaInfo) {
+        Objects.requireNonNull(aMetaInfo, "MetaInfo must not be null");
+        this.metaInfo = aMetaInfo;
     }
 
-    private void setUserId(UserId userId) {
-        Objects.requireNonNull(userId, "UserId must not be null");
-        this.userId = userId;
+    private void setUserId(final UserId aUserId) {
+        Objects.requireNonNull(aUserId, "UserId must not be null");
+        this.userId = aUserId;
     }
 }

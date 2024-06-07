@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,30 +22,56 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "auth", description = "Аутентификация и регистрация")
 @RequiredArgsConstructor
 public class AuthController {
-
+    /**
+     * Dependency that allows to register new user.
+     */
     private final RegisterNewUser register;
+    /**
+     * Dependency that allows to get new tokens during authentication.
+     */
     private final GetNewCredentials getNewCredentials;
-    private final GetNewCredentialsUsingRefreshToken getNewCredentialsUsingRefreshToken;
+    /**
+     * Dependency that allows to get new tokens using refresh token.
+     */
+    private final GetNewCredentialsUsingRefreshToken getRefreshToken;
 
+    /**
+     * Not final to allows Spring use proxy.
+     * @param request DTO that contains user data like email, password
+     *                firstname, etc.
+     */
     @PostMapping("/register")
     @Operation(description = "Регистрация нового пользователя")
     public void register(
-            @RequestBody @Valid UserRegistrationRequest userRegistrationRequest
+            final @RequestBody @Valid UserRegistrationRequest request
     ) {
-        register.register(userRegistrationRequest.ToFullName(),
-                userRegistrationRequest.toCredentials());
+        register.register(request.toFullName(),
+                request.toCredentials());
     }
 
+    /**
+     * Not final to allows Spring use proxy.
+     * @param userLoginRequest DTO that represents login, password.
+     * @return DTO that contains access, refresh tokens
+     */
     @PostMapping("/login")
     @Operation(description = "Аутентификация пользователя")
-    public ApplicationCredentials login(@RequestBody @Valid UserLoginRequest userLoginRequest) {
-
+    public ApplicationCredentials login(
+            final @RequestBody @Valid UserLoginRequest userLoginRequest
+    ) {
         return getNewCredentials.get(userLoginRequest.toCredentials());
     }
-
+    /**
+     * Not final to allows Spring use proxy.
+     * @param user Is param that injects by spring and contains
+     *             current authenticated spring user.
+     * @return DTO that contains access, refresh tokens.
+     */
     @PostMapping("/refresh-token")
     @Operation(description = "Использовать рефреш токен")
-    public ApplicationCredentials refreshToken(@AuthenticationPrincipal CustomUserDetails user) {
-        return getNewCredentialsUsingRefreshToken.get(user.authenticatedUser().userCredentials());
+    public ApplicationCredentials refreshToken(
+            final @AuthenticationPrincipal CustomUserDetails user
+    ) {
+        return getRefreshToken.get(user.authenticatedUser().userCredentials());
     }
 }

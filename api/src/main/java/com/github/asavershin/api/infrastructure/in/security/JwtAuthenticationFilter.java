@@ -2,13 +2,12 @@ package com.github.asavershin.api.infrastructure.in.security;
 
 import com.github.asavershin.api.application.out.TokenRepository;
 import com.github.asavershin.api.application.in.services.user.JwtService;
-import com.github.asavershin.api.domain.user.Credentials;
+import com.github.asavershin.api.config.properties.JwtProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,24 +20,37 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
+    /**
+     * JwtService dependency injection.
+     *
+     * @see com.github.asavershin.api.application.in.services.user.JwtService
+     */
     private final JwtService jwtService;
+
+    /**
+     * UserDetailsService dependency injection.
+     *
+     * @see com.github.asavershin.api.application.out.TokenRepository
+     */
     private final UserDetailsService userDetailsService;
+
+    /**
+     * TokenRepository dependency injection.
+     *
+     * @see com.github.asavershin.api.application.out.TokenRepository
+     */
     private final TokenRepository tokenRepository;
 
     @Override
-    protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+    protected final void doFilterInternal(
+            final @NonNull HttpServletRequest request,
+            final @NonNull HttpServletResponse response,
+            final @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        log.info("Start JWT authentication filter");
         var path = request.getServletPath();
 
         if (path.contains("/register") || path.contains("/login")) {
-            log.info("REGISTER OR LOGIN");
             filterChain.doFilter(request, response);
             return;
         }
@@ -48,26 +60,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        jwt = authHeader.substring(7);
+        jwt = authHeader.substring(JwtProperties.START_OF_TOKEN);
         var email = jwtService.extractSub(jwt);
 
         String token;
         var pathContainsRefreshToken = path.contains("/refresh-token");
-        if(pathContainsRefreshToken){
-            log.info("Refresh token getting");
+        if (pathContainsRefreshToken) {
             token = tokenRepository.getRefreshToken(email);
-        }else{
-            log.info("Access token getting");
+        } else {
             token = tokenRepository.getAccessToken(email);
         }
-        log.info("Token: " + token);
-        log.info("JWT: " + jwt);
         if (!token.equals(jwt)) {
             tokenRepository.deleteAllTokensByUserEmail(email);
             return;
         }
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+        var authToken = new UsernamePasswordAuthenticationToken(
                 userDetailsService.loadUserByUsername(email),
                 null,
                 null

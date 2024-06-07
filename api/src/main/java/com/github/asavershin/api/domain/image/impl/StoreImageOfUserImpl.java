@@ -9,10 +9,15 @@ import lombok.RequiredArgsConstructor;
 @Command
 @RequiredArgsConstructor
 public class StoreImageOfUserImpl implements StoreImageOfUser {
+    /**
+     * The ImageRepository dependency for accessing image data.
+     */
     private final ImageRepository imageRepository;
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public void storeImageOfUser(Image image) {
+    public void storeImageOfUser(final Image image) {
         imageRepository.save(image);
     }
 }

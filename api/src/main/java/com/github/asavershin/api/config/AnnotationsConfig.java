@@ -11,9 +11,12 @@ import org.springframework.context.annotation.FilterType;
 @ComponentScan(
         basePackages = "com.github.asavershin.api",
         includeFilters = {
-                @ComponentScan.Filter(type = FilterType.ANNOTATION, value = DomainService.class),
-                @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Query.class),
-                @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Command.class)
+                @ComponentScan.Filter(type = FilterType.ANNOTATION,
+                        value = DomainService.class),
+                @ComponentScan.Filter(type = FilterType.ANNOTATION,
+                        value = Query.class),
+                @ComponentScan.Filter(type = FilterType.ANNOTATION,
+                        value = Command.class)
         }
 )
 public class AnnotationsConfig {

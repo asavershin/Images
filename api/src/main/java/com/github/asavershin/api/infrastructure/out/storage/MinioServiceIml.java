@@ -3,8 +3,12 @@ package com.github.asavershin.api.infrastructure.out.storage;
 
 import com.github.asavershin.api.application.out.MinioService;
 import com.github.asavershin.api.config.properties.MinIOProperties;
-import io.minio.*;
-import lombok.RequiredArgsConstructor;
+import io.minio.BucketExistsArgs;
+import io.minio.GetObjectArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import lombok.SneakyThrows;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.stereotype.Service;
@@ -12,30 +16,47 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class MinioServiceIml implements MinioService {
+    /**
+     * The MinioClient is used to interact with the MinIO server.
+     */
     private final MinioClient minioClient;
+    /**
+     * The MinIO properties from .yml.
+     */
     private final MinIOProperties minioProperties;
-
-    public MinioServiceIml(MinioClient minioClient, MinIOProperties minioProperties) {
-        this.minioClient = minioClient;
-        this.minioProperties = minioProperties;
+    /**
+     * Constructor for {@link MinioServiceIml}.
+     *
+     * @param aMinioClient The {@link MinioClient}
+     *                    instance to interact with the MinIO server.
+     * @param aMinioProperties The {@link MinIOProperties}
+     *                        instance containing the configuration
+     *                        for the MinIO server.
+     */
+    public MinioServiceIml(final MinioClient aMinioClient,
+                           final MinIOProperties aMinioProperties) {
+        this.minioClient = aMinioClient;
+        this.minioProperties = aMinioProperties;
         createBucket();
     }
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public String saveFile(final MultipartFile image) {
+    public void saveFile(final MultipartFile image, final String filename) {
 
         if (!bucketExists(minioProperties.getBucket())) {
-            throw new FileException("File upload failed: bucket does not exist");
+            throw new FileException(
+                    "File upload failed: bucket does not exist"
+            );
         }
 
         if (image.isEmpty() || image.getOriginalFilename() == null) {
             throw new FileException("File must have name");
         }
-        var link = generateFileName();
         InputStream inputStream;
         try {
             inputStream = image.getInputStream();
@@ -43,17 +64,19 @@ public class MinioServiceIml implements MinioService {
             throw new FileException("File upload failed: "
                     + e.getMessage());
         }
-        saveImage(inputStream, link);
-        return link;
+        saveFile(inputStream, filename);
     }
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
     public byte[] getFile(final String link) {
         if (link == null) {
             throw new FileException("File download failed: link is nullable");
         }
         try {
-            return IOUtils.toByteArray(minioClient.getObject(GetObjectArgs.builder()
+            return IOUtils.toByteArray(
+                    minioClient.getObject(GetObjectArgs.builder()
                     .bucket(minioProperties.getBucket())
                     .object(link)
                     .build()));
@@ -61,7 +84,9 @@ public class MinioServiceIml implements MinioService {
             throw new FileException("File download failed: " + e.getMessage());
         }
     }
-
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
     public void deleteFiles(final List<String> links) {
         if (links == null || links.isEmpty()) {
@@ -96,7 +121,7 @@ public class MinioServiceIml implements MinioService {
     }
 
     @SneakyThrows
-    private void saveImage(
+    private void saveFile(
             final InputStream inputStream,
             final String fileName
     ) {
@@ -107,12 +132,10 @@ public class MinioServiceIml implements MinioService {
                 .build());
     }
 
-    private String generateFileName() {
-        return UUID.randomUUID().toString();
-    }
-
     @SneakyThrows(Exception.class)
-    private boolean bucketExists(String bucketName) {
-        return minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+    private boolean bucketExists(final String bucketName) {
+        return minioClient.bucketExists(
+                BucketExistsArgs.builder().bucket(bucketName).build()
+        );
     }
 }

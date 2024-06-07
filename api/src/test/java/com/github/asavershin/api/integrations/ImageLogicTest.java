@@ -20,6 +20,7 @@ import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -78,6 +79,8 @@ public class ImageLogicTest extends AbstractTest{
             e.printStackTrace();
         }
     }
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Test
     public void storeImageTest(){
@@ -91,6 +94,8 @@ public class ImageLogicTest extends AbstractTest{
         var user = authenticatedUserRepository.findByEmail(credentials.email());
         // When
         var imageId = imageService.storeImage(user.userId(), ImageHelper.multipartFile1());
+        log.info("asdasd");
+        log.info(applicationContext.getBean(ImageService.class, "foo").getClass().toString());
 
         // Then
         var image = imageRepository.findImageByImageId(imageId);
@@ -117,6 +122,7 @@ public class ImageLogicTest extends AbstractTest{
         registerNewUser.register(fullName,credentials);
 
         var user = authenticatedUserRepository.findByEmail(credentials.email());
+        assertNotNull(user);
         // When
         var ex = assertThrows(IllegalArgumentException.class, () -> imageService.storeImage(user.userId(), ImageHelper.multipartFileWithIllegalException()));
 

@@ -2,7 +2,7 @@ package com.github.asavershin.api.common;
 
 import com.github.asavershin.api.domain.image.ImageId;
 import com.github.asavershin.api.domain.image.ImageNameWithExtension;
-import com.github.asavershin.api.domain.image.MetaInfo;
+import com.github.asavershin.api.domain.image.MetaData;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,12 +11,12 @@ public class ImageHelper {
     public static ImageId imageId(){
         return ImageId.nextIdentity();
     }
-    public static MetaInfo metaInfo1(){
-        return new MetaInfo(ImageNameWithExtension.fromOriginalFileName("image.jpg"), 1L);
+    public static MetaData metaInfo1(){
+        return new MetaData(ImageNameWithExtension.fromOriginalFileName("image.jpg"), 1L);
     }
 
-    public static MetaInfo metaInfo3(){
-        return new MetaInfo(ImageNameWithExtension.fromOriginalFileName("image3.jpg"), 3L);
+    public static MetaData metaInfo3(){
+        return new MetaData(ImageNameWithExtension.fromOriginalFileName("image3.jpg"), 3L);
     }
 
     public static MultipartFile multipartFile1() {

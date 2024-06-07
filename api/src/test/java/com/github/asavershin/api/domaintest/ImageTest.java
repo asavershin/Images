@@ -5,7 +5,7 @@ import com.github.asavershin.api.common.UserHelper;
 import com.github.asavershin.api.domain.ResourceOwnershipException;
 import com.github.asavershin.api.domain.image.Image;
 import com.github.asavershin.api.domain.image.ImageId;
-import com.github.asavershin.api.domain.image.MetaInfo;
+import com.github.asavershin.api.domain.image.MetaData;
 import com.github.asavershin.api.domain.user.UserId;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,7 +16,7 @@ public class ImageTest {
     void testAddNewImage() {
         //Given
         ImageId imageId = ImageHelper.imageId();
-        MetaInfo metaInfo = ImageHelper.metaInfo1();
+        MetaData metaInfo = ImageHelper.metaInfo1();
         UserId userId = UserHelper.UserId();
 
         //When
@@ -32,7 +32,7 @@ public class ImageTest {
     void testFoundedImage() {
         //Given
         ImageId imageId = ImageHelper.imageId();
-        MetaInfo metaInfo = ImageHelper.metaInfo1();
+        MetaData metaInfo = ImageHelper.metaInfo1();
         UserId userId = UserHelper.UserId();
         // When
         Image image = new Image(imageId, metaInfo, userId);
@@ -46,7 +46,7 @@ public class ImageTest {
     void testBelongsToUser() {
         // Given
         ImageId imageId = ImageHelper.imageId();
-        MetaInfo metaInfo = ImageHelper.metaInfo1();
+        MetaData metaInfo = ImageHelper.metaInfo1();
         UserId userId = UserHelper.UserId();
         UserId otherUserId = UserHelper.UserId();
 
@@ -66,10 +66,10 @@ public class ImageTest {
         var imageId = ImageId.nextIdentity();
         var userId = UserId.nextIdentity();
 
-        MetaInfo metaInfo1 = ImageHelper.metaInfo1();
+        MetaData metaInfo1 = ImageHelper.metaInfo1();
         Image image1 = new Image(imageId, metaInfo1, userId);
 
-        MetaInfo metaInfo2 = ImageHelper.metaInfo1();
+        MetaData metaInfo2 = ImageHelper.metaInfo1();
         Image image2 = new Image(imageId, metaInfo2, userId);
 
         assertTrue(image1.equals(image2));
@@ -80,7 +80,7 @@ public class ImageTest {
         assertFalse(image1.equals(null));
 
         ImageId imageId3 = ImageId.nextIdentity();
-        MetaInfo metaInfo3 = ImageHelper.metaInfo3();
+        MetaData metaInfo3 = ImageHelper.metaInfo3();
         UserId userId3 = UserHelper.UserId();
         Image image3 = new Image(imageId3, metaInfo3, userId3);
 

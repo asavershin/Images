@@ -11,18 +11,40 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GetNewCredentialsUsingRefreshTokenImpl implements GetNewCredentialsUsingRefreshToken {
+public class GetNewCredentialsUsingRefreshTokenImpl
+        implements GetNewCredentialsUsingRefreshToken {
+    /**
+     * The repository for storing and retrieving tokens.
+     */
     private final TokenRepository tokenRepository;
-    private final JwtService jwtService;
-    private final JwtProperties jwtProperties;
 
+    /**
+     * The service for generating and validating JWT tokens.
+     */
+    private final JwtService jwtService;
+
+    /**
+     * The properties containing the configuration for JWT tokens.
+     */
+    private final JwtProperties jwtProperties;
+    /**
+     * Not final to allow spring use proxy.
+     */
     @Override
-    public ApplicationCredentials get(Credentials credentials) {
+    public ApplicationCredentials get(final Credentials credentials) {
         tokenRepository.deleteAllTokensByUserEmail(credentials.email());
         var at = jwtService.generateAccessToken(credentials);
         var rt = jwtService.generateRefreshToken(credentials);
-        tokenRepository.saveAccessToken(credentials.email(), at, jwtProperties.getAccessExpiration());
-        tokenRepository.saveRefreshToken(credentials.email(), rt, jwtProperties.getRefreshExpiration());
+        tokenRepository.saveAccessToken(
+                credentials.email(),
+                at,
+                jwtProperties.getAccessExpiration()
+        );
+        tokenRepository.saveRefreshToken(
+                credentials.email(),
+                rt,
+                jwtProperties.getRefreshExpiration()
+        );
         return new ApplicationCredentials(at, rt);
     }
 }
