@@ -1,0 +1,22 @@
+<configuration>
+
+    <!-- Конфигурация для логгера JOOQ -->
+    <logger name="org.jooq" level="DEBUG" additivity="false">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
+    <!-- Конфигурация для вывода на консоль -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Конфигурация корневого логгера -->
+    <root level="error">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+</configuration>
