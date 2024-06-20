@@ -31,7 +31,6 @@ public class TryToLoginImpl extends IsEntityFound implements TryToLogin {
 
         var authenticatedUser = authenticatedUserRepository
                 .findByEmail(credentials.email());
-
         isEntityFound(authenticatedUser, "User", "email", credentials.email());
         if (passwordEncoder.matches(credentials.password(),
                 authenticatedUser.userCredentials().password())) {

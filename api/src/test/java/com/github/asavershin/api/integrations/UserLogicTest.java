@@ -16,6 +16,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.github.asavershin.api.common.UserHelper.user1;
+import static com.github.asavershin.api.common.UserHelper.user2;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,7 +45,7 @@ public class UserLogicTest extends AbstractTest {
     private TokenRepository tokenRepository;
 
     @Autowired
-    private GetNewCredentialsUsingRefreshTokenImpl getNewCredentialsUsingRefreshToken;
+    private GetNewCredentialsUsingRefreshTokenImpl byRefresh;
 
 
 
@@ -58,66 +60,54 @@ public class UserLogicTest extends AbstractTest {
     @Test
     public void testRegisterNewUser(){
         // Given
-        var fullName = UserHelper.fullName1();
-        var credentials = UserHelper.credentials1();
-        var fullName2 = UserHelper.fullName1();
-        var credentials2 = UserHelper.credentials2();
-
+        var testUser1 = user1();
+        var testUser2 = user2();
         // When
-        registerNewUser.register(fullName, credentials);
-        registerNewUser.register(fullName2, credentials2);
-
-
+        registerNewUser.register(testUser1);
+        registerNewUser.register(testUser2);
         // Then
+        var user1 = authenticatedUserRepository.findByEmail(testUser1.userCredentials().email());
+        var user2 = authenticatedUserRepository.findByEmail(testUser2.userCredentials().email());
         assertEquals(2, testUserRepository.countUsers());
-        assertNotNull(authenticatedUserRepository.findByEmail(credentials.email()));
-        assertNotNull(authenticatedUserRepository.findByEmail(credentials2.email()));
-
+        assertNotNull(user1);
+        assertEquals(user1, AuthenticatedUser.founded(testUser1.userId(), testUser1.userCredentials()));
+        assertNotNull(user2);
+        assertEquals(user2, AuthenticatedUser.founded(testUser2.userId(), testUser2.userCredentials()));
     }
 
     @Test
     public void testRegisterNewUserWithoutUniqueEmail(){
         // Given
-        var fullName = UserHelper.fullName1();
-        var credentials = UserHelper.credentials1();
-
+        var testUser = user1();
         // When
-        registerNewUser.register(fullName, credentials);
-
+        registerNewUser.register(testUser);
         // Then
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            registerNewUser.register(UserHelper.fullName1(), UserHelper.credentials1());
+        var exception = assertThrows(IllegalArgumentException.class, () -> {
+            registerNewUser.register(testUser);
         });
-
         assertEquals("Email is not unique", exception.getMessage());
     }
 
     @Test
     public void testGetNewCredentials(){
         // Given
-        var fullName = UserHelper.fullName1();
-        var credentials = UserHelper.credentials1();
-
+        var testUser = user1();
         // When
-        registerNewUser.register(fullName, credentials);
-        var newCredentials = getNewCredentials.get(credentials);
+        registerNewUser.register(user1());
+        var newCredentials = getNewCredentials.get(testUser.userCredentials());
         assertDoesNotThrow(() -> jwtService.extractSub(newCredentials.getAccessToken()));
         assertDoesNotThrow(() -> jwtService.extractSub(newCredentials.getRefreshToken()));
-
-        var access = jwtService.extractSub(newCredentials.getAccessToken());
-        var refresh = jwtService.extractSub(newCredentials.getRefreshToken());
-
-        assertDoesNotThrow(() -> tokenRepository.getAccessToken(access));
-        assertDoesNotThrow(() -> tokenRepository.getRefreshToken(refresh));
-
-        var accessFromRedis = tokenRepository.getAccessToken(access);
-        var refreshFromRedis = tokenRepository.getRefreshToken(refresh);
-
+        var accessSub = jwtService.extractSub(newCredentials.getAccessToken());
+        var refreshSub = jwtService.extractSub(newCredentials.getRefreshToken());
+        assertDoesNotThrow(() -> tokenRepository.getAccessToken(accessSub));
+        assertDoesNotThrow(() -> tokenRepository.getRefreshToken(refreshSub));
+        var accessFromRedis = tokenRepository.getAccessToken(accessSub);
+        var refreshFromRedis = tokenRepository.getRefreshToken(refreshSub);
         // Then
-        assertNotNull(access);
-        assertNotNull(refresh);
-        assertEquals(credentials.email(), access);
-        assertEquals(credentials.email(), refresh);
+        assertNotNull(accessSub);
+        assertNotNull(refreshSub);
+        assertEquals(testUser.userCredentials().email(), accessSub);
+        assertEquals(testUser.userCredentials().email(), refreshSub);
 
         assertNotNull(accessFromRedis);
         assertNotNull(refreshFromRedis);
@@ -129,9 +119,8 @@ public class UserLogicTest extends AbstractTest {
     @Test
     public void testGetNewCredentialsForNotRegisteredUser(){
         // When
-        registerNewUser.register(UserHelper.fullName1(), UserHelper.credentials1());
+        registerNewUser.register(user1());
         var ex = assertThrows(NotFoundException.class, () -> getNewCredentials.get(UserHelper.credentials2()));
-
         // Then
         assertEquals(ex.getMessage(),
                 "User" + " with " + "email" + UserHelper.credentials2().email() + " not found");
@@ -140,15 +129,12 @@ public class UserLogicTest extends AbstractTest {
     @Test
     public void getNewCredentialsUsingRefreshTokenTest() throws InterruptedException {
         // Given
-        var fullName = UserHelper.fullName1();
-        var credentials = UserHelper.credentials1();
-        registerNewUser.register(fullName, credentials);
-        var newCredentials = getNewCredentials.get(credentials);
-
+        var testUser = user1();
+        registerNewUser.register(testUser);
+        var newCredentials = byRefresh.get(testUser.userCredentials());
         // When
         Thread.sleep(2000L);
-        var refreshedCredentials = getNewCredentialsUsingRefreshToken.get(credentials);
-
+        var refreshedCredentials = byRefresh.get(testUser.userCredentials());
         // Then
         assertNotNull(refreshedCredentials);
         assertNotEquals(newCredentials.getAccessToken(), refreshedCredentials.getAccessToken());

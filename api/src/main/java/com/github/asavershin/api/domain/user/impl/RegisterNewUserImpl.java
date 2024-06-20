@@ -2,10 +2,8 @@ package com.github.asavershin.api.domain.user.impl;
 
 import com.github.asavershin.api.common.annotations.Command;
 import com.github.asavershin.api.domain.user.Credentials;
-import com.github.asavershin.api.domain.user.FullName;
 import com.github.asavershin.api.domain.user.RegisterNewUser;
 import com.github.asavershin.api.domain.user.User;
-import com.github.asavershin.api.domain.user.UserId;
 import com.github.asavershin.api.domain.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -28,26 +26,30 @@ public class RegisterNewUserImpl implements RegisterNewUser {
      * Not final to allow spring use proxy.
      */
     @Override
-    public void register(final FullName fullName,
-                         final Credentials credentials) {
-        checkEmailForUnique(credentials.email());
+    public void register(final User newUser) {
         userRepository.save(
-                new User(
-                        UserId.nextIdentity(),
-                        fullName,
-                        new Credentials(credentials.email(),
-                                protectPassword(credentials.password()))
+                checkEmailForUnique(
+                        newUser
+                ).protectPassword(
+                        encode(newUser.userCredentials())
                 )
         );
     }
 
-    private void checkEmailForUnique(final String email) {
-        if (userRepository.existByUserEmail(email)) {
+    private User checkEmailForUnique(final User newUser) {
+        if (userRepository.existByUserEmail(
+                newUser.userCredentials().email())
+        ) {
             throw new IllegalArgumentException("Email is not unique");
         }
+        return newUser;
     }
-
-    private String protectPassword(final String unprotectedPassword) {
-        return passwordEncoder.encode(unprotectedPassword);
+    private Credentials encode(final Credentials unprotected) {
+        return new Credentials(
+                unprotected.email(),
+                passwordEncoder.encode(
+                        unprotected.password()
+                )
+        );
     }
 }
