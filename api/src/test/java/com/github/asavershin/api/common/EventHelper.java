@@ -21,15 +21,14 @@ public class EventHelper {
     public static List<Filter> hugeList() {
         var result = new ArrayList<Filter>();
         for (int i = 0; i < 32780; i++) {
-            result.add(Filter.REVERS_COLORS);
+            result.add(Filter.ROTATE);
         }
         return result;
     }
 
     public static List<Filter> filters() {
-        return List.of(Filter.REVERS_COLORS,
-                Filter.CROP,
-                Filter.REMOVE_BACKGROUND);
+        return List.of(Filter.ROTATE,
+                Filter.BLACKWHITE);
     }
 
     public static ImageProcessingStarted started(final ImageId id) {

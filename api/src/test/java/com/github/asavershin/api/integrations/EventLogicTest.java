@@ -92,7 +92,7 @@ public class EventLogicTest
         startedEvent.store(newEvent, testUser.userId());
         // Then
         var storedEvent = getEventFromDB(dsl, newEvent.requestId());
-        assertEquals(storedEvent.size(), 3);
+        assertEquals(storedEvent.size(), 2);
         assertNotNull(storedEvent);
         assertNotNull(storedEvent.get(0).getValue(IMAGE_PROCESSING_EVENT.IMAGE_PROCESSING_EVENT_ID));
         assertEquals(storedEvent.get(0).getValue(IMAGE_PROCESSING_EVENT.IMAGE_PROCESSING_EVENT_ID),

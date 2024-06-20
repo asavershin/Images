@@ -1,0 +1,11 @@
+minio:
+  url: ${MINIO_URL}
+  user: ${MINIO_ROOT_USER}
+  password: ${MINIO_ROOT_PASSWORD}
+  bucket: ${MINIO_BUCKET}
+  ttlprefix: ${MINIO_TTL_PREFIX}
+  expiration: ${MINIO_EXPIRATION}
+  console-port: ${MINIO_CONSOLE_PORT}
+  port: ${MINIO_PORT}
+
+cache-expiration: ${REDIS_CACHE_TIME}

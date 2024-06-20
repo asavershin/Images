@@ -19,7 +19,6 @@
         <springdoc.starter.version>2.1.0</springdoc.starter.version>
         <jsonwebtoken.version>0.11.5</jsonwebtoken.version>
         <minio.version>8.5.7</minio.version>
-        <kafka-clients.version>3.7.0</kafka-clients.version>
 
 <!--        TESTS-->
         <containers.version>1.19.1</containers.version>
@@ -28,6 +27,19 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>8.10.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.bucket4j</groupId>
+            <artifactId>bucket4j-redis</artifactId>
+            <version>8.10.1</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

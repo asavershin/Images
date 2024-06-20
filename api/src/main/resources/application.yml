@@ -54,6 +54,8 @@ minio:
   url: ${MINIO_URL}
   user: ${MINIO_ROOT_USER}
   password: ${MINIO_ROOT_PASSWORD}
+  expiration: ${MINIO_EXPIRATION}
+  ttlprefix: ${MINIO_TTL_PREFIX}
   bucket: ${MINIO_BUCKET}
   console-port: ${MINIO_CONSOLE_PORT}
   port: ${MINIO_PORT}
