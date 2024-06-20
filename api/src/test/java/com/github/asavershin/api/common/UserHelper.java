@@ -26,12 +26,15 @@ public class UserHelper {
         return new Credentials("invalid", "verysecretpassword");
     }
 
-    public static UserId UserId(){
+    public static UserId userId(){
         return UserId.nextIdentity();
     }
 
-    public static User user1(UserId userId, FullName userFullName, Credentials userCredentials){
-        return new User(userId, userFullName, userCredentials);
+    public static User user1(){
+        return new User(userId(), fullName1(), credentials1());
+    }
+    public static User user2(){
+        return new User(userId(), fullName2(), credentials2());
     }
 
     public static FullName longFirstName(){

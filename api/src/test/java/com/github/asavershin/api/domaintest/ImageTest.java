@@ -17,7 +17,7 @@ public class ImageTest {
         //Given
         ImageId imageId = ImageHelper.imageId();
         MetaData metaInfo = ImageHelper.metaInfo1();
-        UserId userId = UserHelper.UserId();
+        UserId userId = UserHelper.userId();
 
         //When
         Image image = new Image(imageId, metaInfo, userId);
@@ -33,7 +33,7 @@ public class ImageTest {
         //Given
         ImageId imageId = ImageHelper.imageId();
         MetaData metaInfo = ImageHelper.metaInfo1();
-        UserId userId = UserHelper.UserId();
+        UserId userId = UserHelper.userId();
         // When
         Image image = new Image(imageId, metaInfo, userId);
         // Then
@@ -47,8 +47,8 @@ public class ImageTest {
         // Given
         ImageId imageId = ImageHelper.imageId();
         MetaData metaInfo = ImageHelper.metaInfo1();
-        UserId userId = UserHelper.UserId();
-        UserId otherUserId = UserHelper.UserId();
+        UserId userId = UserHelper.userId();
+        UserId otherUserId = UserHelper.userId();
 
         // When
         Image image = new Image(imageId, metaInfo, userId);
@@ -81,7 +81,7 @@ public class ImageTest {
 
         ImageId imageId3 = ImageId.nextIdentity();
         MetaData metaInfo3 = ImageHelper.metaInfo3();
-        UserId userId3 = UserHelper.UserId();
+        UserId userId3 = UserHelper.userId();
         Image image3 = new Image(imageId3, metaInfo3, userId3);
 
         assertFalse(image1.equals(image3));

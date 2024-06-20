@@ -63,4 +63,18 @@ public class User {
                 "UserCredentials must not be null");
         this.userCredentials = credentials;
     }
+
+    /**
+     * Method to update the user's credentials.
+     * This method is used to protect the user's
+     * password by updating it with a new one.
+     *
+     * @param credentials the new credentials to be set for the user with
+     *                    encoded password
+     * @return User with encoded password
+     */
+    public User protectPassword(final Credentials credentials) {
+        setUserCredentials(credentials);
+        return this;
+    }
 }

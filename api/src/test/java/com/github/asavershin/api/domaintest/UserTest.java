@@ -13,7 +13,7 @@ public class UserTest {
 
     @Test
     public void testCreateNewUserForRegistration() {
-        UserId userId = UserHelper.UserId();
+        UserId userId = UserHelper.userId();
         FullName fullName = UserHelper.fullName1();
         Credentials credentials = UserHelper.credentials1();
         User user = new User(userId, fullName, credentials);
@@ -33,7 +33,7 @@ public class UserTest {
     @Test
     public void testCreateNewUserForRegistrationWithNullFullName() {
         NullPointerException exception = assertThrows(NullPointerException.class, () -> {
-            new User(UserHelper.UserId(), null, UserHelper.credentials1());
+            new User(UserHelper.userId(), null, UserHelper.credentials1());
         });
         assertEquals("UserFullName must not be null", exception.getMessage());
     }
@@ -41,7 +41,7 @@ public class UserTest {
     @Test
     public void testCreateNewUserForRegistrationWithNullCredentials() {
         NullPointerException exception = assertThrows(NullPointerException.class, () -> {
-            new User(UserHelper.UserId(), UserHelper.fullName1(), null);
+            new User(UserHelper.userId(), UserHelper.fullName1(), null);
         });
         assertEquals("UserCredentials must not be null", exception.getMessage());
     }
@@ -49,7 +49,7 @@ public class UserTest {
     @Test
     public void testCreateNewUserForRegistrationWithInvalidFullName() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            new User(UserHelper.UserId(), UserHelper.longFirstName(), UserHelper.credentials1());
+            new User(UserHelper.userId(), UserHelper.longFirstName(), UserHelper.credentials1());
         });
         assertEquals("Name must be 0-20 in length", exception.getMessage());
     }
@@ -57,7 +57,7 @@ public class UserTest {
     @Test
     void testEquals() {
 
-        var userId = UserHelper.UserId();
+        var userId = UserHelper.userId();
 
         FullName fullName1 = UserHelper.fullName1();
         Credentials credentials1 = UserHelper.credentials1();

@@ -27,6 +27,20 @@ spring:
       redis:
         time-to-live: ${REDIS_CACHE_TIME}
 
+  kafka:
+    listener.ack-mode: manual
+    bootstrap-servers:
+     - kafka-1:9092
+     - kafka-2:9093
+     - kafka-3:9094
+    properties:
+      sasl:
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username=${kafka_username:'kafka'} password=${kafka_password:'password123'};
+        mechanism: PLAIN
+      security:
+        protocol: SASL_PLAINTEXT
+
 springdoc:
   swagger-ui:
     path: /docs
@@ -40,7 +54,16 @@ minio:
   url: ${MINIO_URL}
   user: ${MINIO_ROOT_USER}
   password: ${MINIO_ROOT_PASSWORD}
+  expiration: ${MINIO_EXPIRATION}
+  ttlprefix: ${MINIO_TTL_PREFIX}
   bucket: ${MINIO_BUCKET}
   console-port: ${MINIO_CONSOLE_PORT}
   port: ${MINIO_PORT}
 
+app:
+  wiptopic: ${TOPIC:images.wip}
+  retries: ${RETRIES:3}
+  donetopic: ${TOPIC:images.done}
+  partitions: ${PARTITIONS:1}
+  replicas: ${REPLICAS:3}
+  group-id: ${GROUP_ID:custom-group-id}
