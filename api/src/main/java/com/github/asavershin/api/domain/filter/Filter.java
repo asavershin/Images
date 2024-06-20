@@ -15,7 +15,11 @@ public enum Filter {
     /**
      * Represents the CROP filter.
      */
-    BLACKWHITE;
+    BLACKWHITE,
+    /**
+     * Filter for external api imagga.
+     */
+    IMAGGA;
 
     /**
      * Converts a string representation of a filter name string

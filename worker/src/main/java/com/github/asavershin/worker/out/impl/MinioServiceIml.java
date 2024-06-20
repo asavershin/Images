@@ -57,7 +57,7 @@ public class MinioServiceIml implements MinioService {
      * Not final to allow spring use proxy.
      */
     @Override
-    public void saveFile(byte[] image, final String filename) {
+    public void saveFile(final byte[] image, final String filename) {
 
         if (!bucketExists(minioProperties.getBucket())) {
             throw new FileException(
